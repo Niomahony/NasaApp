@@ -1,151 +1,90 @@
 import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+} from "react-router-dom";
 import { motion } from "framer-motion";
-import { Rocket, Star, Globe, Camera, Search, ArrowRight } from "lucide-react";
+import { Home, ArrowLeft } from "lucide-react";
+import LandingPage from "./components/LandingPage/LandingPage";
+import PictureOfTheDay from "./components/PictureOfTheDay/PictureOfTheDay";
 import "./App.css";
 
-function App() {
-  const features = [
-    {
-      icon: <Camera className="w-8 h-8" />,
-      title: "Astronomy Picture of the Day",
-      description:
-        "Discover stunning daily images from space with detailed explanations",
-    },
-    {
-      icon: <Globe className="w-8 h-8" />,
-      title: "Mars Rover Photos",
-      description: "Explore the Red Planet through the eyes of NASA's rovers",
-    },
-    {
-      icon: <Star className="w-8 h-8" />,
-      title: "Near Earth Objects",
-      description: "Track asteroids and comets that pass near our planet",
-    },
-  ];
+// Navigation Header Component
+function NavigationHeader() {
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+  const isPictureOfTheDay = location.pathname === "/picture-of-the-day";
 
   return (
-    <div className="App">
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="stars"></div>
-        <div className="twinkling"></div>
-        <div className="clouds"></div>
+    <motion.header
+      className="navigation-header"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="nav-container">
+        <Link to="/" className="nav-logo">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Home className="w-6 h-6" />
+            <span>NASA Explorer</span>
+          </motion.div>
+        </Link>
 
-        <motion.div
-          className="hero-content"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <motion.h1
-            className="hero-title"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
+        {isPictureOfTheDay && (
+          <span
+            className="apod-title"
+            style={{ margin: 0, flex: 1, textAlign: "center" }}
           >
-            Explore the Universe
-          </motion.h1>
-          <motion.p
-            className="hero-subtitle"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.4 }}
-          >
-            Journey through NASA's vast collection of space data, images, and
-            discoveries
-          </motion.p>
-          <motion.button
-            className="cta-button"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Rocket className="w-5 h-5 mr-2" />
-            Start Exploring
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </motion.button>
-        </motion.div>
-      </section>
+            Astronomy Picture of the Day
+          </span>
+        )}
 
-      {/* Features Section */}
-      <section className="features-section">
-        <div className="container">
-          <motion.h2
-            className="section-title"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+        {!isHome && (
+          <motion.div
+            className="nav-back"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Discover NASA's Amazing Data
-          </motion.h2>
-          <div className="features-grid">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                className="feature-card"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -10, scale: 1.02 }}
-              >
-                <div className="feature-icon">{feature.icon}</div>
-                <h3 className="feature-title">{feature.title}</h3>
-                <p className="feature-description">{feature.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+            <Link to="/" className="back-button">
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Home</span>
+            </Link>
+          </motion.div>
+        )}
+      </div>
+    </motion.header>
+  );
+}
 
-      {/* Stats Section */}
-      <section className="stats-section">
-        <div className="container">
-          <div className="stats-grid">
-            <motion.div
-              className="stat-item"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="stat-number">140,000+</h3>
-              <p className="stat-label">Images Available</p>
-            </motion.div>
-            <motion.div
-              className="stat-item"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="stat-number">25+</h3>
-              <p className="stat-label">Years of Data</p>
-            </motion.div>
-            <motion.div
-              className="stat-item"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="stat-number">100%</h3>
-              <p className="stat-label">Free Access</p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <p>&copy; NASA Data Explorer. Built using NASA's Open APIs</p>
-        </div>
-      </footer>
-    </div>
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <NavigationHeader />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/picture-of-the-day" element={<PictureOfTheDay />} />
+          <Route
+            path="/mars-photos"
+            element={
+              <div className="coming-soon">Mars Photos - Coming Soon!</div>
+            }
+          />
+          <Route
+            path="/neo"
+            element={
+              <div className="coming-soon">
+                Near Earth Objects - Coming Soon!
+              </div>
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

@@ -1,11 +1,6 @@
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
-const apodRouter = require("./nasa/apod");
-const marsPhotosRouter = require("./nasa/marsPhotos");
-const neoRouter = require("./nasa/neo");
-const epicRouter = require("./nasa/epic");
-const searchRouter = require("./nasa/search");
 
 const NASA_API_BASE = "https://api.nasa.gov";
 const NASA_API_KEY = process.env.NASA_API_KEY || "DEMO_KEY";
@@ -20,7 +15,6 @@ const makeNasaRequest = async (endpoint, params = {}) => {
     });
     return response.data;
   } catch (error) {
-    // Check for NASA API rate limit error
     if (
       error.response &&
       error.response.data &&
@@ -34,7 +28,6 @@ const makeNasaRequest = async (endpoint, params = {}) => {
   }
 };
 
-// Helper to handle errors, including rate limit
 function handleNasaError(res, error, fallbackMsg) {
   if (error.isRateLimit) {
     return res.status(429).json({
@@ -50,10 +43,22 @@ function handleNasaError(res, error, fallbackMsg) {
   });
 }
 
-router.use(apodRouter);
-router.use(marsPhotosRouter);
-router.use(neoRouter);
-router.use(epicRouter);
-router.use(searchRouter);
+router.get("/apod", async (req, res) => {
+  try {
+    const { date, start_date, end_date, count, thumbs } = req.query;
+    const params = {};
+
+    if (date) params.date = date;
+    if (start_date) params.start_date = start_date;
+    if (end_date) params.end_date = end_date;
+    if (count) params.count = count;
+    if (thumbs) params.thumbs = thumbs;
+
+    const data = await makeNasaRequest("/planetary/apod", params);
+    res.json(data);
+  } catch (error) {
+    handleNasaError(res, error, "Failed to fetch APOD data");
+  }
+});
 
 module.exports = router;
